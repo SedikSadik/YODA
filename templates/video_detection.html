@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+<!--  -->
+{% block headers %}
+<!-- Add this css for aesthetic download button -->
+<link
+	rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+
+{% endblock %}
+<!--  -->
+{% block title %} Video Detection {% endblock %}
+<!--  -->
+{% block main %}
+<!-- Form to accept a video -->
+<form
+	method="post"
+	,
+	enctype="multipart/form-data">
+	{{ form.hidden_tag() }}
+	<!-- Display any errors here -->
+	{% for error in form.video.errors %}
+	<span style="color: red">{{ error }}</span>
+	{% endfor %}
+	<!--  -->
+	<div class="row justify-content-center">
+		<div class="col-auto">
+			<!--  -->
+			{{form.video(class="form-control")}}
+
+			<!--  -->
+		</div>
+		<div class="col-auto">
+			<!--  -->
+			{{form.submit(class="btn btn-success")}}
+			<!--  -->
+		</div>
+	</div>
+</form>
+
+<!-- If videos were passed in, then display them -->
+{% if videos_info %}
+<!-- Loop through each video's info  -->
+{% for video in videos_info %}
+<div class="container mt-5">
+	<button class="download-btn">
+		<a
+			style="text-decoration: none"
+			download
+			href="{{video.url}}">
+			<i class="fa fa-download"></i>
+			Download Processed video
+		</a>
+	</button>
+	{% endfor %}
+</div>
+
+{% endif %} {% endblock %}

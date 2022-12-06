@@ -1,0 +1,76 @@
+{% extends "layout.html" %}
+<!--  -->
+{% block headers %}
+<!-- Add this css for aesthetic download button -->
+
+<link
+	rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+
+{% endblock %}
+<!--  -->
+{% block title %} Image Detection {% endblock %}
+<!--  -->
+{% block main %}
+<!-- Form to accept a photo -->
+<form
+	method="post"
+	,
+	enctype="multipart/form-data">
+	{{ form.hidden_tag() }}
+	<!-- Display any errors here -->
+
+	{% for error in form.photo.errors %}
+	<span style="color: red">{{ error }}</span>
+	{% endfor %}
+	<!--  -->
+	<div class="row justify-content-center">
+		<div class="col-auto">
+			<!--  -->
+			{{form.photo(class="form-control")}}
+
+			<!--  -->
+		</div>
+		<div class="col-auto">
+			<!--  -->
+			{{form.submit(class="btn btn-success")}}
+			<!--  -->
+		</div>
+	</div>
+</form>
+
+<!-- If photos were passed in, then display them -->
+{% if photos_info %}
+<div class="container mt-5">
+	<div class="card-group">
+		<div class="row">
+			<!-- Go through each photo's info and display it in a bootstrap card -->
+			{% for photo in photos_info %}
+			<div
+				class="card col-md-4 col-mt-4"
+				style="width: 30rem">
+				<img
+					src="{{photo.url}}"
+					alt="image"
+					class="card-img-top" />
+				<div class="card-body">
+					<h3 class="card-title">{{ photo.title }}</h3>
+					<p class="card-text">{{ photo.description }}</p>
+					<!-- Create a download button -->
+					<button class="download-btn">
+						<a
+							style="text-decoration: none"
+							download
+							href="{{photo.url}}">
+							<i class="fa fa-download"></i>
+							Download
+						</a>
+					</button>
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+	</div>
+</div>
+
+{% endif %} {% endblock %}

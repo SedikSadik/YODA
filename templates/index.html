@@ -1,0 +1,87 @@
+{% extends 'layout.html' %}
+<!--  -->
+{% block title %}
+<!--  -->
+{% endblock %}
+<!--  -->
+
+{% block headers %}
+<!--  -->
+{% endblock %}
+<!--  -->
+{% block main %}
+<!--  -->
+<div class="container mt-6">
+	<p class="yoda_green display-4">Detect anything I shall!</p>
+	<p class="lead">
+		A object detector website I am! Access different functionality through the
+		navigation bar you can!
+	</p>
+</div>
+<div class="container mt-6">
+	<div class="card-group d-flex justify-content-center flex-column">
+		<div class="row">
+			<div class="card col-mt-4">
+				<div class="card-body">
+					<h5 class="card-title">Image Detection</h5>
+					<p class="card-text">
+						Upload a photo here you can! Download the processed photo you can
+						too! Even access uploaded and processed photos through the saved
+						files tab you can!
+					</p>
+					<a
+						href="/image_detection"
+						class="btn btn-primary">
+						Open Image detection
+					</a>
+				</div>
+			</div>
+			<div class="card col-mt-4">
+				<div class="card-body">
+					<h5 class="card-title">Video Detection</h5>
+					<p class="card-text">
+						Upload a video here you can! Process each frame and return a
+						processed video I will shall. Download the processed video you can
+						too! Also saved in the saved files tab your video is.
+					</p>
+					<a
+						href="/video_detection"
+						class="btn btn-primary">
+						Open Video Detection
+					</a>
+				</div>
+			</div>
+			<div class="card col-mt-4">
+				<div class="card-body">
+					<h5 class="card-title">Live Webcam</h5>
+					<p class="card-text">
+						Turn on your webcam and run live object detection you can! Even
+						download live processed photos with a button you may!
+					</p>
+					<a
+						href="/live_webcam"
+						class="btn btn-primary">
+						Open Live Webcam Detection
+					</a>
+				</div>
+			</div>
+			<div class="card col-mt-4">
+				<div class="card-body">
+					<h5 class="card-title">Saved Files</h5>
+					<p class="card-text">
+						Access and delete your previously uploaded and processed files here
+						you can!
+					</p>
+					<a
+						href="/saved_files"
+						class="btn btn-primary">
+						Open My Saved Files
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!--  -->
+{% endblock %}

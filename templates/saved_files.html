@@ -1,0 +1,78 @@
+{% extends 'layout.html' %}
+<!--  -->
+{% block title %} Saved Files {% endblock %}
+<!--  -->
+
+{% block headers %}
+<!--  -->
+<link
+	rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+<!--  -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<!--  -->
+<script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap4.min.js"></script>
+<!--  -->
+{% endblock %}
+<!--  -->
+{% block main %}
+<!--  -->
+<table
+	class="table table-striped"
+	id="file_table">
+	<thead>
+		<tr>
+			<th>Time Received</th>
+			<th>Process Type</th>
+			<th>File Name</th>
+			<th>Media Type</th>
+			<th>Download</th>
+			<th>Delete</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for file in files_dict_list %}
+		<!--  -->
+		<tr>
+			<td>{{ file.upload_time }}</td>
+			<td>{{ file.process_type }}</td>
+			<td>{{ file.filename }}</td>
+			<td>{{ file.media_type }}</td>
+			<td>
+				<button class="download-btn">
+					<a
+						style="text-decoration: none"
+						download
+						href="{{file.path}}">
+						<i class="fa fa-download"></i>
+						Download
+					</a>
+				</button>
+			</td>
+			<td>
+				<form
+					action="/saved_files"
+					method="post">
+					<input
+						type="hidden"
+						name="id"
+						value="{{ file.id }}" />
+					<button
+						class="btn btn-danger btn-lg"
+						type="submit">
+						DELETE FILE
+					</button>
+				</form>
+			</td>
+		</tr>
+		<!--  -->
+		{% endfor %}
+	</tbody>
+</table>
+<script>
+	$("#file_table").DataTable();
+</script>
+<!--  -->
+{% endblock %}
