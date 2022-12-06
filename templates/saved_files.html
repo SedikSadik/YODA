@@ -4,11 +4,11 @@
 <!--  -->
 
 {% block headers %}
-<!--  -->
+<!-- Link to download button css -->
 <link
 	rel="stylesheet"
 	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
-<!--  -->
+<!-- add script for responsive table -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <!--  -->
@@ -24,6 +24,7 @@
 	id="file_table">
 	<thead>
 		<tr>
+			<!-- Define the table heads -->
 			<th>Time Received</th>
 			<th>Process Type</th>
 			<th>File Name</th>
@@ -42,6 +43,7 @@
 			<td>{{ file.media_type }}</td>
 			<td>
 				<button class="download-btn">
+					<!-- Create download link -->
 					<a
 						style="text-decoration: none"
 						download
@@ -55,6 +57,7 @@
 				<form
 					action="/saved_files"
 					method="post">
+					<!-- Create hidden input that sends id of file in the submitted form -->
 					<input
 						type="hidden"
 						name="id"

@@ -11,6 +11,16 @@
 {% block title %} Video Detection {% endblock %}
 <!--  -->
 {% block main %}
+<!-- show errors to user -->
+{% if get_flashed_messages() %}
+<header>
+	<div
+		class="alert alert-danger mb-0 text-center"
+		role="alert">
+		{{ get_flashed_messages() | join(" ") }}
+	</div>
+</header>
+{% endif %}
 <!-- Form to accept a video -->
 <form
 	method="post"
@@ -21,7 +31,7 @@
 	{% for error in form.video.errors %}
 	<span style="color: red">{{ error }}</span>
 	{% endfor %}
-	<!--  -->
+	<!-- Display Form -->
 	<div class="row justify-content-center">
 		<div class="col-auto">
 			<!--  -->
@@ -46,7 +56,7 @@
 		<a
 			style="text-decoration: none"
 			download
-			href="{{video.url}}">
+			href="{{ video.url }}">
 			<i class="fa fa-download"></i>
 			Download Processed video
 		</a>
