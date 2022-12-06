@@ -19,5 +19,3 @@ CREATE TABLE saved (
 CREATE UNIQUE INDEX username ON users (username);
 
 CREATE UNIQUE INDEX id ON saved(id);
-
--- Insert into the saved files table
