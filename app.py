@@ -1,4 +1,4 @@
-# Flask imports
+# Imports
 from flask import (
     Flask,
     flash,
@@ -11,6 +11,7 @@ from flask import (
 )
 from flask_session import Session
 from flask_uploads import UploadSet, configure_uploads, IMAGES
+from werkzeug.security import check_password_hash, generate_password_hash
 
 from helpers import (
     apology,
@@ -22,12 +23,8 @@ from helpers import (
     create_user_folder,
 )
 
-# TODO
-import logging
-import datetime
-
 # Other
-from werkzeug.security import check_password_hash, generate_password_hash
+import datetime
 import cv2
 import os
 from cs50 import SQL
@@ -35,8 +32,6 @@ from cs50 import SQL
 # Configure application
 app = Flask(__name__)
 
-
-# Configure session
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 app.config["SECRET_KEY"] = "very_important_secret_key"
@@ -72,6 +67,8 @@ net = cv2.dnn.readNet("models/yolov4-tiny.weights", "models/yolov4-tiny.cfg")
 
 model = cv2.dnn_DetectionModel(net)
 model.setInputParams(size=(416, 416), scale=1 / 255, swapRB=True)
+
+
 # Use the MSCOCO dataset names
 with open("models/coco.names", "r") as f:
     class_names = [cname.strip() for cname in f.readlines()]
@@ -102,29 +99,9 @@ def after_request(response):
 @app.route("/<process_type>/<media_type>/<user_id>/<filename>")
 def get_file(process_type, media_type, user_id, filename):
     directory = os.path.join(process_type, media_type, user_id)
-    # logging.critical(process_type)
-    # logging.critical(media_type)
-    # logging.critical(user_id)
-    logging.critical(filename)
-    # logging.critical(directory)
     return send_from_directory(directory, filename)
 
-
-# @app.route("/detected/images/<user_id>/<filename>")
-# def get_detected_image(user_id, filename):
-#     return send_from_directory(app.config["DETECTED_PHOTOS_DEST"], filename)
-
-
-# @app.route("/uploads/videos/<filename>")
-# def get_uploaded_video(filename):
-#     return send_from_directory(app.config["UPLOADED_VIDEOS_DEST"], filename)
-
-
-# @app.route("/detected/videos/<filename>")
-# def get_detected_video(filename):
-#     return send_from_directory(app.config["DETECTED_VIDEOS_DEST"], filename)
-
-
+# Index Route
 @app.route("/", methods=["GET"])
 @login_required
 def index():
@@ -140,7 +117,7 @@ def image_detection():
     if request.method == "GET":
         return render_template("image_detection.html", form=form)
     else:
-        # photos_info list holds info about the uploaded and the detected image
+        # photos_info holds info about the uploaded and the detected image
         photos_info = []
         if form.validate_on_submit():  # Check if form submission is valid
 
@@ -150,12 +127,9 @@ def image_detection():
                 str(user_id),
             )
             just_filename = filename_with_folder.split("/")[-1]
-            # logging.critical(filename.split("/")[-1])
-            # logging.critical(filename)
             full_file_path = os.path.join(
                 app.config["UPLOADED_PHOTOS_DEST"], filename_with_folder
             )
-            # logging.critical(file_path)
 
             # read the stored image in matrix form
             image = cv2.imread(filename=full_file_path)
@@ -166,6 +140,8 @@ def image_detection():
             )
             # Draw the detected objects on the image
             draw_boxes(image, class_ids, scores, boxes, class_dict)
+
+
             # Save the new image in the detected folder
             full_output_path = os.path.join(
                 app.config["DETECTED_PHOTOS_DEST"], filename_with_folder
@@ -175,6 +151,7 @@ def image_detection():
                 image,
             )
 
+            # Make a record of the submissions in the database for future referrence
             db.execute(
                 "INSERT INTO saved (owner_id, filename, path, media_type, process_type, upload_time) VALUES (?,?,?,?,?,?)",
                 user_id,
@@ -194,6 +171,7 @@ def image_detection():
                 "Processed File",
                 datetime.datetime.now(),
             )
+
             # get the urls for both images
             uploaded_url = url_for(
                 "get_file",
@@ -202,7 +180,6 @@ def image_detection():
                 user_id=user_id,
                 filename=just_filename,
             )
-            # logging.critical(f"{uploaded_url} is the uploaded url")
             detected_url = url_for(
                 "get_file",
                 process_type="detected",
@@ -210,7 +187,8 @@ def image_detection():
                 user_id=user_id,
                 filename=just_filename,
             )
-            # logging.critical(f"{detected_url} is the detected url")
+
+            # Append both photos to the info list to be shown to user in the browser
             photos_info.append(
                 {
                     "url": uploaded_url,
@@ -245,14 +223,13 @@ def video_detection():
             # Save the passed in video
             filename_with_folder = videos.save(form.video.data, str(user_id))
 
+            # Configure some relevant paths
             just_filename = filename_with_folder.split("/")[-1]
             just_output_filename = ".".join(just_filename.split(".")[:-1]) + ".mov"
-
-            # logging.critical(filename.split("/")[-1])
-            # logging.critical(filename)
             full_file_path = os.path.join(
                 app.config["UPLOADED_VIDEOS_DEST"], filename_with_folder
             )
+            
             # Create a capture object for the video
             cap = cv2.VideoCapture(full_file_path)
             if not cap.isOpened():
@@ -264,17 +241,18 @@ def video_detection():
             width = int(cap.get(3))
             height = int(cap.get(4))
 
-            # Define the output destination
+            # Define the output destination. Because of codec issues, I am only able to use .mov as my output
             full_output_path = (
                 os.path.join(app.config["DETECTED_VIDEOS_DEST"], filename_with_folder)[
                     :-3
                 ]
                 + "mov"
             )
+
             # Create writer object that writes individual frames to a file.
             writer = cv2.VideoWriter(
                 full_output_path,
-                cv2.VideoWriter_fourcc(*"mp4v"),
+                cv2.VideoWriter_fourcc(*"mp4v"), #Define codec
                 float(fps),
                 (width, height),
             )
@@ -283,7 +261,7 @@ def video_detection():
             while True:
                 ret, frame = cap.read()
 
-                # if no more frames are left, the close both the capture and writer objects
+                # if no more frames are left, then close both the capture and writer objects
                 if not ret:
                     writer.release()
                     cap.release()
@@ -294,11 +272,19 @@ def video_detection():
                     frame, confidence_threshold, nms_threshold
                 )
                 draw_boxes(frame, class_ids, scores, boxes, class_dict)
+
                 # Write the drawn image into new file.
                 writer.write(frame)
 
             # Being able to download the uploaded video doens't seem to be necessary. But, this will be used in the future with a video player to show the video in the browser itself.
-            # uploaded_url = url_for("get_file", filename=filename)
+
+            # uploaded_url = url_for(
+            #     "get_file",
+            #     process_type="uploads",
+            #     media_type="videos",
+            #     user_id=user_id,
+            #     filename=just_filename,
+            # )
             # videos_info.append(
             #     {
             #         "url": uploaded_url,
@@ -307,6 +293,26 @@ def video_detection():
             #         "type":filename[-3:]
             #     }
             # )
+
+            detected_url = url_for(
+                "get_file",
+                process_type="detected",
+                media_type="videos",
+                user_id=user_id,
+                filename=just_output_filename,
+            )
+
+            videos_info.append(
+                {
+                    "url": detected_url,
+                    # Not needed for now, but will be used in the future
+                    # "title": filename_with_folder,
+                    # "description": "Detected Video",
+                    # "ext": "mov",
+                }
+            )
+
+            # Make a record of the submissions in the database for future referrence
             db.execute(
                 "INSERT INTO saved (owner_id, filename, path, media_type, process_type, upload_time) VALUES (?,?,?,?,?,?)",
                 user_id,
@@ -326,21 +332,6 @@ def video_detection():
                 datetime.datetime.now(),
             )
 
-            detected_url = url_for(
-                "get_file",
-                process_type="detected",
-                media_type="videos",
-                user_id=user_id,
-                filename=just_output_filename,
-            )
-            videos_info.append(
-                {
-                    "url": detected_url,
-                    "title": filename_with_folder,
-                    "description": "Detected Video",
-                    "ext": "mov",
-                }
-            )
 
         return render_template(
             "video_detection.html", form=form, videos_info=videos_info
@@ -361,17 +352,23 @@ def saved_files():
     """Render the saved_files html file"""
     user_id = session["user_id"]
     if request.method == "GET":
+        # Get every file belonging to this user
         files_dict_list = db.execute(
             "SELECT id, filename, media_type, path, process_type,upload_time FROM saved WHERE owner_id = ?",
             user_id,
         )
         return render_template("saved_files.html", files_dict_list=files_dict_list)
     else:
+        # WHEN DELETE IS CLICKED
+        # Get file id from form and then find where file is located.
         id = request.form.get("id")
         path = db.execute("SELECT path FROM saved WHERE id = ? ", id)[0]["path"]
-        logging.critical(path)
+
+        # remove both the file and the relevant database entry
         os.remove(path=path)
         db.execute("DELETE FROM saved WHERE id = ? ", id)
+
+        # Redirect back to saved_files
         return redirect("/saved_files")
 
 
@@ -408,6 +405,8 @@ def register():
             generate_password_hash(password),
         ):
             return apology("There was an error when registering your account.")
+        
+        # Get the id assigned to the user and create a folder for them
         user_id = db.execute("SELECT id FROM users WHERE username = ?", username)[0][
             "id"
         ]

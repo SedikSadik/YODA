@@ -6,13 +6,12 @@ let videoVisibility = true;
 let detecting = false;
 let button;
 // global HTML element
-// const toggleVideoOnOff = document.getElementById("toggleVideoOnOff");
 const toggleDetectingOnOff = document.getElementById("toggleDetectingOnOff");
 
 // set cursor to wait until video elment is loaded
 document.body.style.cursor = "wait";
 
-// The preload() function if existed is called before the setup() function
+// The preload() function is called before the setup() function
 function preload() {
 	// create detector object from "cocossd" model
 	detector = ml5.objectDetector("cocossd");
@@ -27,6 +26,8 @@ function setup() {
 	// The element is separate from the canvas and is displayed by default.
 	video = createCapture(VIDEO);
 	video.size(640, 480);
+
+	// Don't show the raw video, we're just showing the processed version
 	video.hide();
 	console.log("video element is created");
 	video.elt.addEventListener("loadeddata", function () {

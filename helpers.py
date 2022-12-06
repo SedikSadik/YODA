@@ -8,6 +8,7 @@ from flask_wtf.file import FileField, FileAllowed, FileRequired
 from wtforms import SubmitField
 from flask_uploads import UploadSet, IMAGES
 
+# Define valid video formats
 VIDEOS = tuple("mp4 webm ogg avi mov".split())
 
 # same as finance
@@ -109,6 +110,7 @@ def draw_boxes(
 # Create an upload form to accept images only
 class ImageUploadForm(FlaskForm):
     photo = FileField(
+        # Create validators 
         validators=[
             FileRequired("Please upload a file"),
             FileAllowed(UploadSet("photos", IMAGES), "Only image formats are allowed"),
@@ -121,6 +123,7 @@ class ImageUploadForm(FlaskForm):
 class VideoUploadForm(FlaskForm):
 
     video = FileField(
+        # Create validators 
         validators=[
             FileRequired("Please upload a file"),
             FileAllowed(
@@ -131,7 +134,7 @@ class VideoUploadForm(FlaskForm):
     )
     submit = SubmitField("Upload")
 
-
+# Create a folder if it does not exist
 def create_user_folder(user_id: int | str, root_dir: str):
     """Creates a user folder if one does not exist"""
     path = os.path.join(root_dir, str(user_id))
