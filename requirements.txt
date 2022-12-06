@@ -1,0 +1,6 @@
+flask
+flask-reuploaded
+flask-wtf
+cs50
+opencv-python
+flask-sessions
