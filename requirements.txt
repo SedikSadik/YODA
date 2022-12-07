@@ -4,4 +4,4 @@ flask-wtf
 cs50
 opencv-python
 numpy
-flask-sessions
+flask-session
