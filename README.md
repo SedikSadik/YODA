@@ -6,6 +6,7 @@
 - Introduction
 - Requirements
 - Installation
+- Troubleshooting
 - Credits
 - About me.
 
