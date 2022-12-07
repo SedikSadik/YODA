@@ -4,7 +4,7 @@ let detector = null; // detector object
 let detections = []; // store detection result
 let videoVisibility = true;
 let detecting = false;
-let button;
+
 // global HTML element
 const toggleDetectingOnOff = document.getElementById("toggleDetectingOnOff");
 
