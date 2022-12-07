@@ -12,7 +12,7 @@
 
 ## Introduction
 This is an object detection project. Users may upload photos, videos to the website and have them processed by an object detection model. 
-[Here](https://youtu.be/V95hg3Cvt3I) is a video of me showcasing my project. 
+[Here](https://youtu.be/r6xBFeBB9mo) is a video of me showcasing my project. 
 ### Image and video detection
 Here users can upload an image or video file. The file is processed and a processed copy is created. Both can be downloaded from the website. 
 ### Live Webcam 

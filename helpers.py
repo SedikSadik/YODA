@@ -12,6 +12,8 @@ from flask_uploads import UploadSet, IMAGES
 VIDEOS = tuple("mp4 webm ogg avi mov mkv".split())
 
 # same as finance
+
+
 def apology(message, code=400):
     """Render message as an apology to user."""
 
@@ -36,8 +38,9 @@ def apology(message, code=400):
 
     return render_template("apology.html", top=code, bottom=escape(message)), code
 
-
 # same as finance
+
+
 def login_required(f):
     """
     Decorate routes to require login.
@@ -119,6 +122,8 @@ class ImageUploadForm(FlaskForm):
     submit = SubmitField("Upload")
 
 # Create an upload form to accept videos only
+
+
 class VideoUploadForm(FlaskForm):
 
     video = FileField(
@@ -134,6 +139,8 @@ class VideoUploadForm(FlaskForm):
     submit = SubmitField("Upload")
 
 # Create a folder if it does not exist
+
+
 def create_user_folder(user_id: int | str, root_dir: str):
     """Creates a user folder if one does not exist"""
     path = os.path.join(root_dir, str(user_id))

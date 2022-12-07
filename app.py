@@ -102,6 +102,8 @@ def get_file(process_type, media_type, user_id, filename):
     return send_from_directory(directory, filename)
 
 # Index Route
+
+
 @app.route("/", methods=["GET"])
 @login_required
 def index():
@@ -140,7 +142,6 @@ def image_detection():
             )
             # Draw the detected objects on the image
             draw_boxes(image, class_ids, scores, boxes, class_dict)
-
 
             # Save the new image in the detected folder
             full_output_path = os.path.join(
@@ -252,7 +253,7 @@ def video_detection():
             # Create writer object that writes individual frames to a file.
             writer = cv2.VideoWriter(
                 full_output_path,
-                cv2.VideoWriter_fourcc(*"mp4v"), #Define codec
+                cv2.VideoWriter_fourcc(*"mp4v"),  # Define codec
                 float(fps),
                 (width, height),
             )
@@ -331,7 +332,6 @@ def video_detection():
                 "Processed File",
                 datetime.datetime.now(),
             )
-
 
         return render_template(
             "video_detection.html", form=form, videos_info=videos_info

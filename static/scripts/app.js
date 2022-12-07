@@ -1,3 +1,4 @@
+// I use the prettier extension to format javascript.
 // declare global variable
 let video = null; // video element
 let detector = null; // detector object
