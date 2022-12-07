@@ -9,7 +9,7 @@ from wtforms import SubmitField
 from flask_uploads import UploadSet, IMAGES
 
 # Define valid video formats
-VIDEOS = tuple("mp4 webm ogg avi mov".split())
+VIDEOS = tuple("mp4 webm ogg avi mov mkv".split())
 
 # same as finance
 def apology(message, code=400):
@@ -117,7 +117,6 @@ class ImageUploadForm(FlaskForm):
         ]
     )
     submit = SubmitField("Upload")
-
 
 # Create an upload form to accept videos only
 class VideoUploadForm(FlaskForm):
